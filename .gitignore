@@ -1,0 +1,8 @@
+# deps / runtime
+node_modules/
+*.log
+.npmrc
+
+# 运行时生成
+*.tmp
+.DS_Store

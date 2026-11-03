@@ -1,0 +1,26 @@
+# dsh-qq-wake 的 bundle patch：把唤醒这一行插进 profile 的插件名册。
+# 这是 DSH 认的「组合包」声明——package.json 里 dsh.bundle.patch 指的就是这个文件；
+# 缺了它、只把包名写进 profile 的 dsh.profile.bundles，插件管理器会报
+# 「这个包没有声明组合包，不能作为插件管理」。
+#
+# 装法：把包名登记到 ~/.dsh/profiles/<profile>/package.json 的 dsh.profile.bundles 即可，
+#       bundle patch 会自动应用。别再在 profile 的 cordis.patch.yml 里手插一遍——
+#       同一个 id 插两次会加载两份实例，两份共享 globalThis 的 state 会互相把对方的定时器掐掉。
+#
+# 这里的 config 只是「初始默认」。装完之后请在
+#   DSH → 设置 → QQ 唤醒
+# 里改配置并保存 —— 那份（~/.dsh/dsh-qq-wake.json）优先级更高，改完立刻生效，不用重启 DSH。
+- insert:
+    - id: qq-wake
+      name: 'dsh-qq-wake'
+      config:
+        # 插件加载时（= DSH 刚起来时）就把绑定的会话挨个叫一遍
+        开: true
+        # 日志里出现「那间会话现在没活着」时也顺手叫一声（补充手段，不保证在宿主里灵）
+        看日志: true
+        # 会话清单跟着 ~/.dsh/qq-bridge-config.json 的绑定走
+        跟随QQ绑定: true
+        # 兜底轮询间隔（毫秒），0 = 不轮询
+        检查毫秒: 1200
+        # 同一间会话的唤醒冷却（秒）
+        冷却秒: 10

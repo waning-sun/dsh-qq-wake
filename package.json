@@ -1,0 +1,56 @@
+{
+  "name": "dsh-qq-wake",
+  "version": "0.5.2",
+  "type": "module",
+  "description": "跟 QQ 绑定的会话一叫就醒：插件加载时（也就是 DSH 刚起来时）把绑定里的会话挨个叫一遍，没活着的用 ctx.agents.resume() 提起来（带上 provider/model，不然醒了一跑就报 has no provider/model）；之后再用事件驱动 + 1.2 秒 stat 兜底盯 ~/.dsh/logs 当补充手段。设置面板带 provider 选项卡、自动列模型和思考强度、密钥 AES-256-GCM 加密落盘。",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "scripts",
+    "README.md",
+    "cordis.patch.yml",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/waning-sun/dsh-qq-wake.git"
+  },
+  "homepage": "https://github.com/waning-sun/dsh-qq-wake#readme",
+  "bugs": {
+    "url": "https://github.com/waning-sun/dsh-qq-wake/issues"
+  },
+  "author": "waning-sun",
+  "scripts": {
+    "test": "node scripts/selftest.mjs",
+    "smoke": "node scripts/smoke-client.mjs"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "qq",
+    "qq-link",
+    "session",
+    "resume",
+    "watchdog"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "slots"
+      ],
+      "external": [
+        "react"
+      ]
+    }
+  },
+  "license": "MIT"
+}
