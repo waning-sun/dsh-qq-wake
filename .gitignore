@@ -6,3 +6,4 @@ node_modules/
 # 运行时生成
 *.tmp
 .DS_Store
+README.md.bak-*

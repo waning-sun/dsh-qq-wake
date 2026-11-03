@@ -46,6 +46,18 @@
 > 再重启一次。DSH 的凭证是 `apiKeyEnv` → credentials / 环境变量那一套，不是浏览器 cookie；
 > 面板里写 cookie 只当「一串密钥」存，能用到它的适配器得自己去读。
 
+## Requirements
+
+dsh-market 的索引会读这一段（标题必须是英文 `Requirements`，否则市场校验报 `README.md has no Requirements section`），内容照旧中文。
+
+| 项 | 要求 | 清单字段 |
+| --- | --- | --- |
+| DSH 宿主 | `>= 0.2.1-rc.2`（本机实测 0.2.1-rc.3） | `engines.dsh` |
+| Node.js | `>= 20`（插件零 npm 依赖，只用 Node 内置模块） | `engines.node` |
+| 需要的宿主服务 | `agents`（`ctx.agents.get/resume`，叫醒会话靠它）、`webServer`（设置面板的几条路由）、`llm`（可选，列 provider / 模型；拿不到就退化为手填） | `export const inject` |
+| 搭配 | `dsh-qq-link`（把 QQ 消息落到 DSH 会话）、`dsh-napcat-keeper`（可选，保证 NapCat 不掉线） | — |
+| 操作系统 | Windows / macOS / Linux 均可（只读 `~/.dsh` 下的日志与配置） | — |
+
 ## 宿主侧
 
 | 路由 | 作用 |
