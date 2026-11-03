@@ -2,22 +2,6 @@
 
 让 QQ 绑定的会话**一叫就醒**。
 
-## 0.5.2 修了什么（2026-11-04）
-
-插件在「已安装插件」页里显示异常，日志里是：
-
-```
-TypeError: Invalid effect
-dsh: warning: 1 entry did not activate
-```
-
-原因：`lib/index.js` 的 `apply` 被写成了 `export async function apply`，末尾还 `return { 状态, 扫日志, ... }`。
-DSH 的 cordis 用 `safeCollect` 收 effect，**只认 `undefined` 或清理函数** —— Promise 和普通对象都会判成
-`Invalid effect`，整个 entry 直接不激活（定时器其实已经挂上了，但宿主认为这个插件没起来）。
-现在 `apply` 是同步函数、不返回值，启动巡检改成「发出去就不等」，清理统一走 `ctx.effect`，
-并用代际号保证旧实例的 cleanup 不会掐掉新一代的定时器。
-
-顺手补了测试：`npm test` 会断言 `apply` 不是 async、不返回值、挂上了 `ctx.effect`。
 
 ## 它解决什么
 
@@ -34,7 +18,7 @@ DSH 的 cordis 用 `safeCollect` 收 effect，**只认 `undefined` 或清理函�
 
 ## 为什么不轮询
 
-第一版是每 20 秒巡检一遍，被否了 —— 打游戏的时候白烧 CPU。
+第一版是每 20 秒巡检一遍 —— 白烧 CPU。
 现在改成 `fs.watch`（内核事件，闲着零开销）+ **只读日志的新增字节**（每个文件记住 offset），
 默认一个定时器都不挂（`兜底秒: 0`）。
 
@@ -80,14 +64,3 @@ DSH 的 cordis 用 `safeCollect` 收 effect，**只认 `undefined` 或清理函�
 npm test     # scripts/selftest.mjs：尾八认会话、日志增量、冷却、半行、配置归一/存取、测一下
 npm run smoke # scripts/smoke-client.mjs：把 client.js 塞进假 React 渲染，确认面板不白屏
 ```
-
-## 两个踩过的坑
-
-1. **热重载会复用 `globalThis` 上的旧 state**。0.1.0 的 state 没有 `watchers` 字段，
-   0.2.0 的 `停()` 一 `for...of` 就 `TypeError: state.watchers is not iterable`，
-   整个 profile recompose 失败、`config reload … failed`。
-   现在按「新默认值补缺、老的留着」合并，`停()` 里再 `Array.isArray` 兜一下。
-2. **改 `lib/index.js` 宿主不会热重载**。日志只会说
-   `changed modules keep running their previous code until a restart` ——
-   host 侧有改动（比如加路由）得重启 DSH 才会真的跑新代码。
-   客户端 `lib/client.js` 相反：刷新页面就好。
