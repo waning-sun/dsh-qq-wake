@@ -1,3 +1,9 @@
+> [!IMPORTANT]
+> **本插件已改名为 [`dsh-session-wake`](https://github.com/waning-sun/dsh-session-wake)，不再依赖 QQ / `dsh-qq-link`。**
+> 
+> 新包：`npm i dsh-session-wake` · 新仓库：https://github.com/waning-sun/dsh-session-wake
+> 本仓库（`dsh-qq-wake`）保留只作历史记录，npm 上的旧版本已全部标记为 deprecated。
+
 # dsh-qq-wake
 
 让 QQ 绑定的会话**一叫就醒**。
